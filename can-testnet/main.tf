@@ -211,7 +211,10 @@ aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json .
 EOF
 }
 
-resource "aws_instance" "ec2_bp_1" {
+module "ec2_bp_1" {
+  source = "../modules/ec2/"
+
+  name = "${var.project_name}-bp-1"
   ami = data.aws_ami.ubuntu.id
   instance_type = var.ec2_bp_instance_type
   key_name = var.ec2_key_name
@@ -220,17 +223,17 @@ resource "aws_instance" "ec2_bp_1" {
   vpc_security_group_ids = [ module.sg_allow_all.this_security_group_id ]
   subnet_id = module.vpc.public_subnets[0]
 
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = 25
-  }
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 25
+    }
+  ]
   
   user_data_base64 = base64encode(local.ec2_bp_1_user_data)
 
   tags = merge({ Name = "${var.project_name}-bp-1" }, local.project_tags)
   volume_tags = merge({ Name = "${var.project_name}-bp-1" }, local.project_tags)
-
-  lifecycle { ignore_changes = [ ami ]}
 }
 
 // Block Producer 2
@@ -246,7 +249,7 @@ export BPACCOUNT=${var.ec2_bp_2_acc_name}
 export PUBKEY=${var.ec2_bp_2_pub_key}
 export PRIKEY=${var.ec2_bp_2_pri_key}
 export GENESIS_PEER=${var.genesis_bp_hostname}
-export PEER1=${aws_instance.ec2_bp_1.private_ip}
+export PEER1=${module.ec2_bp_1.private_ip[0]}
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/can_bp_genesis_start.sh .  &&  chmod 755 ./can_bp_genesis_start.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/stop.sh .  &&  chmod 755 ./stop.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json . 
@@ -254,26 +257,29 @@ aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json .
 EOF
 }
 
-resource "aws_instance" "ec2_bp_2" {
+module "ec2_bp_2" {
+  source = "../modules/ec2/"
+
+  name = "${var.project_name}-bp-2"
   ami = data.aws_ami.ubuntu.id
   instance_type = var.ec2_bp_instance_type
   key_name = var.ec2_key_name
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name 
 
   vpc_security_group_ids = [ module.sg_allow_all.this_security_group_id ]
-  subnet_id = module.vpc.public_subnets[1]
+  subnet_id = module.vpc.public_subnets[0]
 
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = 25
-  }
-
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 25
+    }
+  ]
+  
   user_data_base64 = base64encode(local.ec2_bp_2_user_data)
 
   tags = merge({ Name = "${var.project_name}-bp-2" }, local.project_tags)
   volume_tags = merge({ Name = "${var.project_name}-bp-2" }, local.project_tags)
-
-  lifecycle { ignore_changes = [ ami ]}
 }
 
 # // Block Producer 3
@@ -289,8 +295,8 @@ export BPACCOUNT=${var.ec2_bp_3_acc_name}
 export PUBKEY=${var.ec2_bp_3_pub_key}
 export PRIKEY=${var.ec2_bp_3_pri_key}
 export GENESIS_PEER=${var.genesis_bp_hostname}
-export PEER1=${aws_instance.ec2_bp_1.private_ip}
-export PEER2=${aws_instance.ec2_bp_2.private_ip}
+export PEER1=${module.ec2_bp_1.private_ip[0]}
+export PEER2=${module.ec2_bp_2.private_ip[0]}
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/can_bp_genesis_start.sh .  &&  chmod 755 ./can_bp_genesis_start.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/stop.sh .  &&  chmod 755 ./stop.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json . 
@@ -298,26 +304,29 @@ aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json .
 EOF
 }
 
-resource "aws_instance" "ec2_bp_3" {
+module "ec2_bp_3" {
+  source = "../modules/ec2/"
+
+  name = "${var.project_name}-bp-3"
   ami = data.aws_ami.ubuntu.id
   instance_type = var.ec2_bp_instance_type
   key_name = var.ec2_key_name
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name 
 
   vpc_security_group_ids = [ module.sg_allow_all.this_security_group_id ]
-  subnet_id = module.vpc.public_subnets[1]
+  subnet_id = module.vpc.public_subnets[0]
 
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = 25
-  }
-
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 25
+    }
+  ]
+  
   user_data_base64 = base64encode(local.ec2_bp_3_user_data)
 
   tags = merge({ Name = "${var.project_name}-bp-3" }, local.project_tags)
   volume_tags = merge({ Name = "${var.project_name}-bp-3" }, local.project_tags)
-
-  lifecycle { ignore_changes = [ ami ]}
 }
 
 // API Node 
@@ -330,9 +339,9 @@ wget https://github.com/canfoundation/CAN/releases/download/can-v1.0.0/cannet_1.
 apt install -y ./cannet_1.0.0-ubuntu-18.04_amd64.deb && rm cannet_1.0.0-ubuntu-18.04_amd64.deb
 mkdir api-node  &&  cd api-node/
 export GENESIS_PEER=${var.genesis_bp_hostname}
-export PEER1=${aws_instance.ec2_bp_1.private_ip}
-export PEER2=${aws_instance.ec2_bp_2.private_ip}
-export PEER3=${aws_instance.ec2_bp_3.private_ip}
+export PEER1=${module.ec2_bp_1.private_ip[0]}
+export PEER2=${module.ec2_bp_2.private_ip[0]}
+export PEER3=${module.ec2_bp_3.private_ip[0]}
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/can_api_genesis_start.sh .  &&  chmod 755 ./can_api_genesis_start.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/stop.sh .  &&  chmod 755 ./stop.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json . 
@@ -340,7 +349,10 @@ aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json .
 EOF
 }
 
-resource "aws_instance" "ec2_api_node" {
+module "ec2_api_node" {
+  source = "../modules/ec2/"
+
+  name = "${var.project_name}-api-node"
   ami = data.aws_ami.ubuntu.id
   instance_type = var.ec2_api_node_instance_type
   key_name = var.ec2_key_name
@@ -349,22 +361,22 @@ resource "aws_instance" "ec2_api_node" {
   vpc_security_group_ids = [ module.sg_allow_all.this_security_group_id ]
   subnet_id = module.vpc.public_subnets[0]
 
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = 25
-  }
-
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 25
+    }
+  ]
+  
   user_data_base64 = base64encode(local.ec2_api_node_user_data)
 
   tags = merge({ Name = "${var.project_name}-api-node" }, local.project_tags)
   volume_tags = merge({ Name = "${var.project_name}-api-node" }, local.project_tags)
-
-  lifecycle { ignore_changes = [ ami ]}
 }
 
 resource "aws_lb_target_group_attachment" "alb_tg_api_node_attach" {
   target_group_arn = module.alb.target_group_arns[0]
-  target_id        = aws_instance.ec2_api_node.id
+  target_id        = module.ec2_api_node.id[0]
   port             = 8888
 }
 
@@ -378,9 +390,9 @@ wget https://github.com/canfoundation/CAN/releases/download/can-v1.0.0/cannet_1.
 apt install -y ./cannet_1.0.0-ubuntu-18.04_amd64.deb && rm cannet_1.0.0-ubuntu-18.04_amd64.deb
 mkdir state-node  &&  cd state-node/
 export GENESIS_PEER=${var.genesis_bp_hostname}
-export PEER1=${aws_instance.ec2_bp_1.private_ip}
-export PEER2=${aws_instance.ec2_bp_2.private_ip}
-export PEER3=${aws_instance.ec2_bp_3.private_ip}
+export PEER1=${module.ec2_bp_1.private_ip[0]}
+export PEER2=${module.ec2_bp_2.private_ip[0]}
+export PEER3=${module.ec2_bp_3.private_ip[0]}
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/can_state_genesis_start.sh .  &&  chmod 755 ./can_state_genesis_start.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/stop.sh .  &&  chmod 755 ./stop.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json . 
@@ -388,7 +400,10 @@ aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json .
 EOF
 }
 
-resource "aws_instance" "ec2_state_node" {
+module "ec2_state_node" {
+  source = "../modules/ec2/"
+
+  name = "${var.project_name}-state-node"
   ami = data.aws_ami.ubuntu.id
   instance_type = var.ec2_state_node_instance_type
   key_name = var.ec2_key_name
@@ -397,17 +412,17 @@ resource "aws_instance" "ec2_state_node" {
   vpc_security_group_ids = [ module.sg_allow_all.this_security_group_id ]
   subnet_id = module.vpc.public_subnets[0]
 
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = 50
-  }
-
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 50
+    }
+  ]
+  
   user_data_base64 = base64encode(local.ec2_state_node_user_data)
 
   tags = merge({ Name = "${var.project_name}-state-node" }, local.project_tags)
   volume_tags = merge({ Name = "${var.project_name}-state-node" }, local.project_tags)
-
-  lifecycle { ignore_changes = [ ami ]}
 }
 
 // History Node 
@@ -425,9 +440,9 @@ echo 'export PATH=$PATH:~/hapi/bin' >> ~/.bashrc
 cd ~
 mkdir history-node  &&  cd history-node/
 export GENESIS_PEER=${var.genesis_bp_hostname}
-export PEER1=${aws_instance.ec2_bp_1.private_ip}
-export PEER2=${aws_instance.ec2_bp_2.private_ip}
-export PEER3=${aws_instance.ec2_bp_3.private_ip}
+export PEER1=${module.ec2_bp_1.private_ip[0]}
+export PEER2=${module.ec2_bp_2.private_ip[0]}
+export PEER3=${module.ec2_bp_3.private_ip[0]}
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/can_history_genesis_start.sh .  &&  chmod 755 ./can_history_genesis_start.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/stop.sh .  &&  chmod 755 ./stop.sh
 aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json . 
@@ -435,50 +450,36 @@ aws s3 cp s3://${module.s3.this_s3_bucket_id}/can-node/genesis.json .
 EOF
 }
 
-resource "aws_instance" "ec2_history_node" {
+module "ec2_history_node" {
+  source = "../modules/ec2/"
+
+  name = "${var.project_name}-history-node"
   ami = data.aws_ami.ubuntu.id
-  instance_type = var.ec2_state_node_instance_type
+  instance_type = var.ec2_history_node_instance_type
   key_name = var.ec2_key_name
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name 
 
   vpc_security_group_ids = [ module.sg_allow_all.this_security_group_id ]
   subnet_id = module.vpc.public_subnets[0]
 
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = 25
-  }
-
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 25
+    }
+  ]
+  
   user_data_base64 = base64encode(local.ec2_history_node_user_data)
 
   tags = merge({ Name = "${var.project_name}-history-node" }, local.project_tags)
   volume_tags = merge({ Name = "${var.project_name}-history-node" }, local.project_tags)
-
-  lifecycle { ignore_changes = [ ami ]}
 }
 
 resource "aws_lb_target_group_attachment" "alb_tg_history_node_attach" {
   target_group_arn = module.alb.target_group_arns[1]
-  target_id        = aws_instance.ec2_history_node.id
+  target_id        = module.ec2_history_node.id[0]
   port             = 8888
 }
-
-# // Application Load Balancer
-# # resource "aws_lb_target_group" "alb_tg_api_node" {
-# #   name        = "${var.project_name}-alb-tg-api-node"
-# #   port        = 8888
-# #   protocol    = "HTTP"
-# #   target_type = "instance"
-# #   vpc_id      = module.vpc.vpc_id
-# # }
-
-# # resource "aws_lb_target_group" "alb_tg_history_node" {
-# #   name        = "${var.project_name}-alb-tg-history-node"
-# #   port        = 8888
-# #   protocol    = "HTTP"
-# #   target_type = "instance"
-# #   vpc_id      = module.vpc.vpc_id
-# # }
 
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
@@ -586,5 +587,5 @@ resource "aws_route53_record" "ec2_state_node_record" {
   name    = "state.${var.project_name}.${var.route_53_domain_name}"
   type    = "A"
   ttl     = "300"
-  records = [ aws_instance.ec2_state_node.public_ip ]
+  records = [ module.ec2_state_node.public_ip[0] ]
 }
