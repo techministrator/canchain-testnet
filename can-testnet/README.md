@@ -11,8 +11,10 @@ CAN Chain is a blockchain-based, decentralized system that enables the developme
 ## Requirements
 
 Requirements
-- Self-configured Genesis Block Producer node using [CAN Chain Source Code can-v1.0.0 tag](https://github.com/canfoundation/CAN/tree/can-v1.0.0) 
-- Public & Private key pairs for each Block Producer (minimum 3)
+- Self-configured Genesis Block Producer node using [CAN Chain Source Code can-v1.0.0 tag](https://github.com/canfoundation/CAN/tree/can-v1.0.0) and provide the hostname/IP address to Terraform variable (named `genesis_bp_hostname`)
+- Copy the `genesis.json` file of the above Genesis Block Producer node and replace it here in `./scripts/genesis.json` before running Terraform
+- 3 Public & Private key pairs for each Block Producer
+- Route 53 Domain Name and Route 53 Hosted Zone ID
 
 ## Resources Deployment
 
