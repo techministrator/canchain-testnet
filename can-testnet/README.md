@@ -55,12 +55,29 @@ Required Input Variables (Use `terraform.tfvars` file to specify each of the bel
   - `ec2_bp_3_pub_key` 
   - `ec2_bp_3_pri_key` 
 
-## Execution
+You can use the `terraform.tfvars.example` I included in this directory. Rename it to `terraform.tfvars`.
 
 ```bash
-$ terraform init
+$ mv terraform.tfvars.example terraform.tfvars 
+```
 
+## Execution
+
+Initialize the working directory
+```bash
+$ terraform init
+```
+
+Check the deployment and run the stack
+```bash
 $ terraform plan
 
 $ terraform apply
+```
+
+## Remove
+
+When this Testnet is no longer in use. Remove them:
+```bash
+$ terraform destroy
 ```
