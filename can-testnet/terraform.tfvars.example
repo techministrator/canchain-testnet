@@ -1,0 +1,27 @@
+project_name = "quick-test"
+project_environment = "test"
+project_region = "ap-northeast-2"
+
+// Uncomment the below if you wish to use other domain name
+// Make sure that the Hosted Zone is hosted in this AWS Account
+route_53_domain_name = "canfoundation.io"
+route_53_zone_id  = "ZPNAIXMOU915O"
+
+ec2_bp_instance_type = "t3.small"
+ec2_key_name = "quangluong-icn"
+
+genesis_bp_hostname = "52.194.235.152"
+
+ec2_bp_1_acc_name = "test1.bp"
+ec2_bp_1_pub_key = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
+ec2_bp_1_pri_key = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
+
+ec2_bp_2_acc_name = "test2.bp"
+ec2_bp_2_pub_key = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
+ec2_bp_2_pri_key = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
+
+ec2_bp_3_acc_name = "test3.bp"
+ec2_bp_3_pub_key = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
+ec2_bp_3_pri_key = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
+
+light_history_built_zip_download_link = "https://canchain-testnet.s3-ap-southeast-1.amazonaws.com/containers-build/history-api-build.zip"
