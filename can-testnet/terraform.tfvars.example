@@ -1,27 +1,37 @@
-project_name = "quick-test"
+project_name        = "quick-test"
 project_environment = "test"
-project_region = "ap-northeast-2"
+project_region      = "ap-northeast-2"
 
 // Uncomment the below if you wish to use other domain name
 // Make sure that the Hosted Zone is hosted in this AWS Account
 route_53_domain_name = "canfoundation.io"
-route_53_zone_id  = "ZPNAIXMOU915O"
+route_53_zone_id     = "ZPNAIXMOU915O"
 
-ec2_bp_instance_type = "t3.small"
+// EC2 Instance Variables
+ec2_bp_instance_type           = "t3.small"
+ec2_api_node_instance_type     = "t3.medium"
+ec2_state_node_instance_type   = "t3.medium"
+ec2_history_node_instance_type = "t3.medium"
+
 ec2_key_name = "quangluong-icn"
 
-genesis_bp_hostname = "52.194.235.152"
+// Block Producer Important Variables
+genesis_bp_hostname = "52.198.235.59"
 
 ec2_bp_1_acc_name = "test1.bp"
-ec2_bp_1_pub_key = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
-ec2_bp_1_pri_key = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
+ec2_bp_1_pub_key  = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
+ec2_bp_1_pri_key  = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
 
 ec2_bp_2_acc_name = "test2.bp"
-ec2_bp_2_pub_key = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
-ec2_bp_2_pri_key = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
+ec2_bp_2_pub_key  = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
+ec2_bp_2_pri_key  = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
 
 ec2_bp_3_acc_name = "test3.bp"
-ec2_bp_3_pub_key = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
-ec2_bp_3_pri_key = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
+ec2_bp_3_pub_key  = "EOS7vJ19A492ke8AEUbLHGidFbD2HxMfQNwbZuRctRmmXXeX6NXFc"
+ec2_bp_3_pri_key  = "5JtCLjk5xynU1DSJxELNtZw7tQFGjrogvoA7pAy1WRDuAg73t5M"
 
+// Binaries Download Link
+can_binaries_package_download_link    = "https://github.com/canfoundation/CAN/releases/download/can-v1.0.0/cannet_1.0.0-ubuntu-18.04_amd64.deb"
+can_binaries_package_name             = "cannet_1.0.0-ubuntu-18.04_amd64.deb"
 light_history_built_zip_download_link = "https://canchain-testnet.s3-ap-southeast-1.amazonaws.com/containers-build/history-api-build.zip"
+

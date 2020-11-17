@@ -1,20 +1,20 @@
 output "testnet_api_endpoint" {
-  value = "https://${aws_route53_record.alb_api_node_record.name}"
+  value       = "https://${aws_route53_record.alb_api_node_record.name}"
   description = "Testnet API Endpoint"
 }
 
 output "testnet_history_endpoint" {
-  value = "https://${aws_route53_record.alb_history_node_record.name}"
+  value       = "https://${aws_route53_record.alb_history_node_record.name}"
   description = "Testnet History Endpoint"
 }
 
 output "testnet_history_explorer" {
-  value = "https://local.bloks.io/?nodeUrl=https://${aws_route53_record.alb_history_node_record.name}&coreSymbol=CAT&systemDomain=eosio"
+  value       = "https://local.bloks.io/?nodeUrl=https://${aws_route53_record.alb_history_node_record.name}&coreSymbol=CAT&systemDomain=eosio"
   description = "Testnet History Explorer Endpoint"
 }
 
 output "testnet_state_endpoint" {
-  value = "${aws_route53_record.ec2_state_node_record.name}:8080"
+  value       = "${aws_route53_record.ec2_state_node_record.name}:8080"
   description = "Testnet State Endpoint"
 }
 
